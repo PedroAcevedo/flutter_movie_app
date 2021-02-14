@@ -1,14 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:movies_app/src/models/movie_model.dart';
 import 'package:movies_app/src/providers/movie_providers.dart';
-import 'package:movies_app/src/redux/movies/movie_actions.dart';
 import 'package:movies_app/src/redux/storage.dart';
 import 'package:movies_app/src/widgets/card_swiper_widget.dart';
 import 'package:movies_app/src/widgets/horizontal_movies.dart';
+
+import '../redux/storage.dart';
 import 'package:redux/src/store.dart';
+import '../redux/storage.dart';
+import '../widgets/horizontal_movies.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -71,13 +71,18 @@ class _HomePageState extends State<HomePage> {
                     'Populars',
                     style: Theme.of(context).textTheme.subtitle1,
                   )),
-              SizedBox(height: 5.0),
-              StoreConnector<AppState, Store>(
-                converter: (store) => store,
-                onInitialBuild: (store) => Redux.store.dispatch(getPopulars()),
+              StoreConnector<AppState, Store<AppState>>(
                 distinct: true,
-                builder: (context, movies) {
-                  return CircularProgressIndicator();
+                converter: (store) => store,
+                rebuildOnChange: false,
+                builder: (context, store) {
+                  return store.state == null
+                      ? CircularProgressIndicator()
+                      : MoviesHorizontal(
+                          movies: store.state.moviesState.movies,
+                          action: () {
+                            setState(() {});
+                          });
                 },
               ),
             ],

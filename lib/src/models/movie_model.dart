@@ -77,7 +77,7 @@ class Movie {
       return 'http://plataforma.integra-rse.com/wp-content/plugins/learnpress/assets/images/no-image.png';
     }
 
-    return 'https://image.tmdb.org/t/p/w500/$posterPath';
+    return 'https://image.tmdb.org/t/p/w500$posterPath';
   }
 
 

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:redux/redux.dart';
-import 'package:redux_thunk/redux_thunk.dart';
 
-import 'package:movies_app/src/redux/movies/movie_actions.dart';
 import 'package:movies_app/src/redux/movies/movie_reducer.dart';
 import 'package:movies_app/src/redux/movies/movie_stage.dart';
 
 AppState appReducer(AppState state, dynamic action) {
-  if (action is SetMoviesStateAction) {
-    final nextPostsState = movieReducer(state.moviesState, action);
-
-    return state.copyWith(postsState: nextPostsState);
-  }
+  final nextPostsState = movieReducer(state.moviesState, action);
+  return state.copyWith(moviesState: nextPostsState);
 }
 
 @immutable
@@ -22,7 +17,7 @@ class AppState {
     @required this.moviesState,
   });
 
-  AppState copyWith({MoviesState postsState}) {
+  AppState copyWith({MoviesState moviesState}) {
     return AppState(
       moviesState: moviesState ?? this.moviesState,
     );
@@ -41,12 +36,9 @@ class Redux {
   }
 
   static Future<void> init() async {
-    final moviesStateInitial = MoviesState.initial();
-
     _store = Store<AppState>(
       appReducer,
-      middleware: [thunkMiddleware],
-      initialState: AppState(moviesState: moviesStateInitial),
+      initialState: AppState(moviesState: new MoviesState.initial()),
     );
   }
 }
